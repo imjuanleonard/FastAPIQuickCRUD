@@ -1,0 +1,31 @@
+{% for decorator in decorators -%}
+{{ decorator }}
+{% endfor -%}
+@dataclass
+{%- if base_class %}
+class {{ class_name }}({{ base_class }}):
+{%- else %}
+class {{ class_name }}:
+{%- endif %}
+{%- if description %}
+    """
+    {{ description }}
+    """
+{%- endif %}
+{%- if not fields %}
+    pass
+{%- endif %}
+{%- for field in fields -%}
+    {%- if field|length > 2 %}
+    {{ field[0] }}: {{ field[1] }} = {{field[2]}}
+    {%- else %}
+    {{ field[0] }}: {{ field[1] }}
+    {%- endif %}
+{%- endfor -%}
+
+class Child(Base):
+    __tablename__ = 'test_right'
+    id = Column(Integer, primary_key=True)
+    child = Column(CHAR(10))
+    parent = relationship("Parent",
+                          secondary=association_table)
